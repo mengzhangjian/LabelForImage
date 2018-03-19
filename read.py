@@ -44,20 +44,25 @@ if __name__ == '__main__':
         # ...
         # prefix/fuse
 
-
+    prediction = []
     x = graph.get_tensor_by_name('prefix/Placeholder:0')
     y = graph.get_tensor_by_name('prefix/fuse:0')
+    prediction = tf.nn.sigmoid(y)
+    #images = tf.reshape(tf.cast(y_out,tf.uint8),[480,480,1])
+    #images_encode = tf.image.encode_jpeg(images)
+    #fname = tf.constant('1.jpeg')
+    #fwrite = tf.write_file(fname,images_encode)
+
+
 
     with tf.Session(graph=graph) as sess:
 	img = load_image("8068.jpg")
-	y_out = sess.run(y,feed_dict={x:[img]})
-        
-        em_maps = [e[0] for e in y_out]
-        print("em_map",len(em_maps),em_maps[0].shape)
-        for idx,em in enumerate(em_maps): 
-                em[em < 0.0] = 0.0
-		em = 255.0 * em
-                em = np.tile(em,[1,1,3])
-                
-        	em = Image.fromarray(np.uint8(em))
-        	em.save(os.path.join('test','testing-{}.png'.format(idx)))
+	result = sess.run(prediction,feed_dict={x:[img]})
+    em = result[0]
+    print em
+    em [ em < 0 ] = 0.0  
+    em = 255.0 * em
+    em = np.tile(em, [1, 1, 3])
+    print em.shape  
+    em = Image.fromarray(np.uint8(em))
+    em.save(os.path.join('test','1.png'))
