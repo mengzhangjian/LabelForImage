@@ -27,7 +27,7 @@ def load_annotation(datapath,index,idx):
 		        y = float(h.find('y').text)
 		        point.append([x,y])
                 pts = np.array(point,np.int32)
-	        cv2.polylines(blank_image,[pts],True,(255,255,255))
+	        cv2.polylines(blank_image,[pts],True,(255,255,255),2)
     savename = os.path.join(datapath,'BinaryImages',str(index)+ '.jpg')
     cv2.imwrite(savename,blank_image)
 
